@@ -1,0 +1,50 @@
+name: RomM
+version: "0.1.0"
+slug: romm
+description: Self-hosted ROM manager and player (wraps the official rommapp/romm image)
+url: https://github.com/rommapp/romm
+arch:
+  - amd64
+  - aarch64
+init: false
+startup: application
+boot: auto
+stage: experimental
+timeout: 60
+# Needs the official MariaDB app (or any app providing the mysql service)
+services:
+  - mysql:need
+map:
+  - type: media          # ROM library -> /media/romm/library
+    read_only: false
+  - type: addon_config   # config.yml -> /addon_configs/<slug>_romm/
+    read_only: false
+ports:
+  8080/tcp: 7666
+ports_description:
+  8080/tcp: RomM web interface
+webui: "http://[HOST]:[PORT:8080]"
+options:
+  db_name: romm
+  auth_secret_key: ""
+  igdb_client_id: ""
+  igdb_client_secret: ""
+  screenscraper_user: ""
+  screenscraper_password: ""
+  steamgriddb_api_key: ""
+  retroachievements_api_key: ""
+  mobygames_api_key: ""
+  hasheous_api_enabled: true
+  playmatch_api_enabled: false
+schema:
+  db_name: str
+  auth_secret_key: password?
+  igdb_client_id: str?
+  igdb_client_secret: password?
+  screenscraper_user: str?
+  screenscraper_password: password?
+  steamgriddb_api_key: password?
+  retroachievements_api_key: password?
+  mobygames_api_key: password?
+  hasheous_api_enabled: bool
+  playmatch_api_enabled: bool
