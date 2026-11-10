@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.1
+
+- Added `library_path` option so the ROM library can be a mounted network share (`/media/...` or `/share/...`).
+- Added `resources_path` and `assets_path` options.
+- Added `share` mapping.
+
 ## 0.1.0
 
 - Initial experimental release. Untested, built quickly with AI assistance.

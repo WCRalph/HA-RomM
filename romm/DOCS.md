@@ -13,10 +13,27 @@ Wraps the official `rommapp/romm` image.
 ## Paths
 | What | Where |
 |---|---|
-| ROM library | `/media/romm/library` |
+| ROM library | `library_path` option (default `/media/romm/library`) |
 | config.yml | `/addon_configs/<slug>_romm/config.yml` |
-| Covers / screenshots / saves | app `/data` (included in app backups) |
+| Covers / screenshots | `resources_path` option (default `/data/resources`) |
+| Saves / states | `assets_path` option (default `/data/assets`) |
 
 ## Notes
 - Leave `auth_secret_key` empty to auto-generate one (persisted in `/data`).
 - Redis runs inside the container; its cache is not persisted across restarts.
+
+## Using a network share
+Mount it in HA first (Settings > System > Storage > Add network storage) with usage **Media** (appears at `/media/<name>`) or **Share** (appears at `/share/<name>`).
+Then set `library_path` in this app's Configuration to that folder, e.g. `/media/retro`, and restart.
+RomM expects ROMs at `<library_path>/roms/<platform>/` (or `<library_path>/<platform>/roms/`).
+
+## Path options
+All of these are in the app's Configuration tab. Restart the app after changing them.
+
+| Option | Default | Allowed locations |
+|---|---|---|
+| `library_path` | `/media/romm/library` | `/media/...` or `/share/...` (must already exist unless default) |
+| `resources_path` | `/data/resources` | `/data/`, `/media/`, `/share/`, `/config/` |
+| `assets_path` | `/data/assets` | `/data/`, `/media/`, `/share/`, `/config/` |
+
+Anything under `/data` is included in app backups; put large resources on a share to keep backups small.

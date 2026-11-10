@@ -20,7 +20,7 @@ export_opt() {
 link_dir() {
   local target="$1" link="$2"
   mkdir -p "$target"
-  if [ -L "$link" ]; then return; fi
+  if [ -L "$link" ]; then ln -sfn "$target" "$link"; return; fi
   if [ -d "$link" ]; then
     cp -a "$link"/. "$target"/ 2>/dev/null || true
     rm -rf "$link"
@@ -78,11 +78,37 @@ export_opt PLAYMATCH_API_ENABLED playmatch_api_enabled
 
 # ---- Persistent storage layout ----
 # /romm is a VOLUME in the upstream image, so subfolders can be symlinked.
-mkdir -p /media/romm/library/roms
-link_dir /media/romm/library /romm/library     # ROMs: /media/romm/library/roms/<platform>/
+LIB="$(opt library_path)"; LIB="${LIB:-/media/romm/library}"; LIB="${LIB%/}"
+case "$LIB" in
+  /media/*|/share/*) ;;
+  *) log "ERROR: library_path must start with /media/ or /share/ (got '$LIB')"; exit 1 ;;
+esac
+if [ "$LIB" = "/media/romm/library" ]; then
+  mkdir -p "$LIB/roms"                         # default location: create it for the user
+elif [ ! -d "$LIB" ]; then
+  log "ERROR: library_path '$LIB' does not exist. Check the network share is mounted and the path is right."
+  log "Folders visible under /media: $(ls -1 /media 2>/dev/null | tr '\n' ' ')"
+  log "Folders visible under /share: $(ls -1 /share 2>/dev/null | tr '\n' ' ')"
+  exit 1
+fi
+log "ROM library: $LIB"
+link_dir "$LIB" /romm/library                  # RomM expects <library>/roms/<platform>/
 link_dir /config            /romm/config       # config.yml: /addon_configs/<slug>_romm/
-link_dir /data/resources    /romm/resources    # covers/screenshots (in app backups)
-link_dir /data/assets       /romm/assets       # saves/states
+
+# Validate an optional path setting: must live under a mapped location
+resolve_path() {  # $1=option name, $2=default
+  local v; v="$(opt "$1")"; v="${v:-$2}"; v="${v%/}"
+  case "$v" in
+    /media/*|/share/*|/data/*|/config/*) echo "$v" ;;
+    *) log "ERROR: $1 must start with /media/, /share/, /data/ or /config/ (got '$v')"; exit 1 ;;
+  esac
+}
+RES="$(resolve_path resources_path /data/resources)"
+AST="$(resolve_path assets_path /data/assets)"
+log "Resources (covers/screenshots): $RES"
+log "Assets (saves/states): $AST"
+link_dir "$RES" /romm/resources
+link_dir "$AST" /romm/assets
 
 log "Starting RomM"
 exec /docker-entrypoint.sh /init

@@ -1,5 +1,5 @@
 name: RomM
-version: "0.1.0"
+version: "0.1.1"
 slug: romm
 description: Self-hosted ROM manager and player (wraps the official rommapp/romm image)
 url: https://github.com/rommapp/romm
@@ -15,7 +15,9 @@ timeout: 60
 services:
   - mysql:need
 map:
-  - type: media          # ROM library -> /media/romm/library
+  - type: media          # network shares mounted with usage "Media" -> /media/<name>
+    read_only: false
+  - type: share          # network shares mounted with usage "Share" -> /share/<name>
     read_only: false
   - type: addon_config   # config.yml -> /addon_configs/<slug>_romm/
     read_only: false
@@ -26,6 +28,9 @@ ports_description:
 webui: "http://[HOST]:[PORT:8080]"
 options:
   db_name: romm
+  library_path: /media/romm/library
+  resources_path: /data/resources
+  assets_path: /data/assets
   auth_secret_key: ""
   igdb_client_id: ""
   igdb_client_secret: ""
@@ -38,6 +43,9 @@ options:
   playmatch_api_enabled: false
 schema:
   db_name: str
+  library_path: str
+  resources_path: str
+  assets_path: str
   auth_secret_key: password?
   igdb_client_id: str?
   igdb_client_secret: password?
