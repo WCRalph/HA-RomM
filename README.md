@@ -46,7 +46,7 @@ Metadata provider keys (IGDB, ScreenScraper, SteamGridDB, RetroAchievements, Mob
 ## Known limitations
 
 - Untested. See the warning above.
-- No Home Assistant ingress. RomM is reached on its own port (7666).
+- Home Assistant ingress (sidebar panel) is **experimental**. RomM isn't designed to run under a URL subpath, so the panel may be blank or partly broken. The direct port (7666) always works.
 - Redis runs inside the container and its cache isn't kept across restarts.
 - The Dockerfile uses RomM's `latest` tag. Pin a specific version (the `ROMM_VERSION` build arg) once you have a working setup, since RomM has had breaking changes between major versions.
 - Because the library is symlinked in from `/media`, upstream features that rely on hardlinks across mounts may not work.
