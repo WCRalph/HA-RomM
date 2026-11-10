@@ -37,3 +37,6 @@ All of these are in the app's Configuration tab. Restart the app after changing 
 | `assets_path` | `/data/assets` | `/data/`, `/media/`, `/share/`, `/config/` |
 
 Anything under `/data` is included in app backups; put large resources on a share to keep backups small.
+
+## Ingress (experimental)
+The app adds a RomM entry to the HA sidebar via ingress. RomM isn't built for URL subpaths, so this may not render properly. If it doesn't, use `http://<ha-ip>:7666` directly. RomM has its own login; ingress does not sign you in automatically.

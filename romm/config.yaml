@@ -1,5 +1,5 @@
 name: RomM
-version: "0.1.1"
+version: "0.1.2"
 slug: romm
 description: Self-hosted ROM manager and player (wraps the official rommapp/romm image)
 url: https://github.com/rommapp/romm
@@ -26,6 +26,12 @@ ports:
 ports_description:
   8080/tcp: RomM web interface
 webui: "http://[HOST]:[PORT:8080]"
+# EXPERIMENTAL: ingress (sidebar panel). RomM is not built for URL subpaths, so this may show a blank/broken page.
+# The direct port above (7666) keeps working either way.
+ingress: true
+ingress_port: 8080
+panel_icon: mdi:gamepad-variant
+panel_title: RomM
 options:
   db_name: romm
   library_path: /media/romm/library

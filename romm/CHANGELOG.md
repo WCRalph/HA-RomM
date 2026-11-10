@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.2
+
+- EXPERIMENTAL: enabled Home Assistant ingress (sidebar panel). May not render correctly. The direct port (7666) still works.
+
 ## 0.1.1
 
 - Added `library_path` option so the ROM library can be a mounted network share (`/media/...` or `/share/...`).
